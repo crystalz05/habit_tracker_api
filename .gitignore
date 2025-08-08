@@ -1,0 +1,12 @@
+# Ignore IDE stuff
+/.project
+/.classpath
+/.settings/
+
+# Ignore build outputs
+/target/
+/bin/
+
+# Ignore secrets
+.env
+src/main/resources/application.properties
