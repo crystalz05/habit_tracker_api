@@ -15,9 +15,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 	
@@ -27,6 +29,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		
+		if (request.getServletPath().startsWith("/api/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 		
 		String authHeader = request.getHeader("Authorization");
 		String token = null;

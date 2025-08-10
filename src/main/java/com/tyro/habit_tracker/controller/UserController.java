@@ -3,17 +3,23 @@ package com.tyro.habit_tracker.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tyro.habit_tracker.dto.ResetPasswordForm;
 import com.tyro.habit_tracker.dto.UserResponseDTO;
 import com.tyro.habit_tracker.security.JwtUtil;
 import com.tyro.habit_tracker.service.UserService;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -24,13 +30,16 @@ public class UserController {
 	private final UserService userService;
 	private final JwtUtil jwtUtil;
 	
-	@DeleteMapping("/delete/{userId}")
-	public ResponseEntity<String> deleteUserbyId(@PathVariable Long userId){
+	@DeleteMapping("/delete-account")
+	public ResponseEntity<String> deleteUserbyId(@RequestHeader("Authorization") String authHeader){
+		
+	    String token = authHeader.replace("Bearer ", "");
+	    String email = jwtUtil.extractUsername(token);
+
 		try {
-			userService.deleteUserById(userId);		
+			userService.deleteUserByEmail(email);	
 			return ResponseEntity.status(HttpStatus.OK).body("User Deleted Successfully");			
 		}catch (UsernameNotFoundException e) {
-			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist");						
 		}
 	}
@@ -42,5 +51,6 @@ public class UserController {
 	    UserResponseDTO userResponseDTO = userService.getUserByUsername(email);
 	    return ResponseEntity.ok(userResponseDTO);
 	}
+	
 
 }

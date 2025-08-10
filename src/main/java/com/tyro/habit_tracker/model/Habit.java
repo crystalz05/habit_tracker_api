@@ -1,5 +1,6 @@
 package com.tyro.habit_tracker.model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,16 +57,16 @@ public class Habit {
 	@Column(nullable = false)
     private Long streakCount = 0L;
     
-
     @Column(nullable = false)
     private Frequency frequency;
-	
+    
+    private DayOfWeek dayofWeekReminder;
+    	
 	@CreatedDate
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 	
 	@LastModifiedDate
-	@Column(nullable = false)
 	private LocalDateTime upDatedAt;
 	
     @ManyToOne(fetch = FetchType.LAZY)

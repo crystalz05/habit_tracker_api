@@ -52,7 +52,14 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-            		.requestMatchers("/api/auth/**", "/error").permitAll()
+            		.requestMatchers("/api/auth/**", 
+            				"/swagger-ui/**",
+            				"/reset-password",
+            				"/update-password",
+            	            "/v3/api-docs/**",
+            	            "/test/**",
+            	            "verification.html",
+            				"/error").permitAll()
                 .requestMatchers("/api/user/me").authenticated()
                 .anyRequest().authenticated())
             .formLogin(form -> form.disable())

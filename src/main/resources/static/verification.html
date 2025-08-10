@@ -1,0 +1,49 @@
+<!-- verification.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .success { color: green; font-size: 20px; }
+        .error { color: red; font-size: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Email Verification</h1>
+    <p id="message">Verifying your email...</p>
+
+    <script>
+        // Extract token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = decodeURIComponent(urlParams.get("token"));
+        const email = decodeURIComponent(urlParams.get("email"));
+
+        if (!token) {
+            document.getElementById("message").textContent = "Invalid verification link.";
+            document.getElementById("message").className = "error";
+        } else {
+            fetch(`http://localhost:8080/api/auth/verify?token=${token}&email=${email}`, {
+                method: "GET"
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById("message").textContent = "Your email has been verified successfully!";
+                    document.getElementById("message").className = "success";
+                } else {
+                    return response.text().then(err => {
+                        document.getElementById("message").textContent = err || "Verification failed.";
+                        document.getElementById("message").className = "error";
+                    });
+                }
+            })
+            .catch(() => {
+                document.getElementById("message").textContent = "An error occurred while verifying.";
+                document.getElementById("message").className = "error";
+            });
+        }
+    </script>
+</body>
+</html>

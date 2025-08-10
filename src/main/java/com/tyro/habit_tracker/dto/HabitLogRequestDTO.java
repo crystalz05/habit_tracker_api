@@ -16,7 +16,7 @@ public class HabitLogRequestDTO {
 	@NotBlank(message = "A note is required")
 	private String note;
 	
-	@NotBlank(message = "Frequency is required")
+	@NotNull(message = "Status is required")
 	private LogStatus status;
 	
 	@NotNull(message = "Habit id is required")

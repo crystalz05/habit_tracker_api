@@ -1,5 +1,6 @@
 package com.tyro.habit_tracker.dto;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 import com.tyro.habit_tracker.misc.Frequency;
@@ -36,6 +37,8 @@ public class HabitResponseDTO {
     private LocalDateTime updatedAt;
 
     private boolean completed;
+    
+    private DayOfWeek dayofWeekReminder;
 
     @NotNull(message = "Streak count is required")
     private Long streakCount;

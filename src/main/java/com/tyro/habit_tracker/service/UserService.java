@@ -3,6 +3,7 @@ package com.tyro.habit_tracker.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -21,13 +22,14 @@ import com.tyro.habit_tracker.dto.LoginRequest;
 import com.tyro.habit_tracker.dto.UserDTO;
 import com.tyro.habit_tracker.dto.UserResponseDTO;
 import com.tyro.habit_tracker.model.User;
+import com.tyro.habit_tracker.model.VerificationToken;
 import com.tyro.habit_tracker.repository.UserRepository;
 import com.tyro.habit_tracker.security.CustomUserDetails;
 import com.tyro.habit_tracker.security.JwtUtil;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @Service
@@ -38,6 +40,9 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+	private final VerificationTokenService tokenService;
+	
+
 
 
     private void validatePassword(String password) {
@@ -88,8 +93,14 @@ public class UserService {
                 .fullName(userDTO.getFullName())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
                 .build();
-
-        return userRepository.save(user);
+        
+        userRepository.save(user);
+        
+        String token = tokenService.createVerificationToken(user).getToken();
+        
+        tokenService.sendHtmlEmail(user.getEmail(), token);
+        
+        return user;
     }
 
     
@@ -127,11 +138,41 @@ public class UserService {
         return new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities());
     }
     
-    public void deleteUserById(Long userId) {
-    	if(userRepository.existsById(userId)) {
-        	userRepository.deleteById(userId);
+    public void deleteUserByEmail(String email) {
+    	if(userRepository.existsByEmail(email)) {
+        	userRepository.deleteUserByEmail(email);
     	}else {
     		throw new UsernameNotFoundException("user not found");
     	}
+    }
+    
+    @Transactional
+    public boolean resetPassword(String token, String password, String confirmPassword) {
+    	
+		System.out.println("first pass "+password +"  "+ "second pass "+confirmPassword);
+
+    	VerificationToken verificationToken = tokenService.validateToken(token);
+    	
+        if (verificationToken == null) {
+            throw new IllegalArgumentException("Invalid Token");
+        }
+    	
+    	if(!Objects.equals(password, confirmPassword)) {
+            throw new IllegalArgumentException("Passwords did not match");
+    	}
+    	
+        User updateUser = verificationToken.getUser();
+
+        if (!isValidPassword(password)) {
+            throw new IllegalArgumentException("Password does not meet security requirements");
+        }
+        
+        updateUser.setPassword(passwordEncoder.encode(password));
+        userRepository.save(updateUser);
+        return true;
+    }
+
+    private boolean isValidPassword(String password) {
+        return password != null && password.length() >= 6;
     }
 }

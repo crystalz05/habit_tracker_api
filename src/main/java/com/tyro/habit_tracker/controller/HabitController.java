@@ -50,6 +50,7 @@ public class HabitController {
 	                habit.getCreatedAt(),
 	                habit.getUpDatedAt(),
 	                habit.getCompleted(),
+	                habit.getDayofWeekReminder(),
 	                habit.getStreakCount(),
 	                habit.getFrequency(),
 	                habit.getUser().getId()
@@ -70,6 +71,7 @@ public class HabitController {
 			                habit.getCreatedAt(),
 			                habit.getUpDatedAt(),
 			                habit.getCompleted(),
+			                habit.getDayofWeekReminder(),
 			                habit.getStreakCount(),
 			                habit.getFrequency(),
 			                habit.getUser().getId()

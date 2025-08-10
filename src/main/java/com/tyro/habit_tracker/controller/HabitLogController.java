@@ -60,7 +60,8 @@ public class HabitLogController {
 	@GetMapping("/retrieve-all-logs/{habitId}")
 	public ResponseEntity<List<HabitLogResponseDTO>> retrieveAllHabitLogsByHabitId(Long habitId){
 		
-		List<HabitLog> habitLogs = habitLogService.retriveAllHabitLogsByHabitId(habitId);
+		List<HabitLog> habitLogs = habitLogService.retrieveAllHabitLogsByHabitId(habitId);
+		
 				
 		List<HabitLogResponseDTO> habitLogsResponse = habitLogs.stream()
 				.map(habitLog -> HabitLogResponseDTO.builder()
