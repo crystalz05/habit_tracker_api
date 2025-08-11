@@ -1,0 +1,54 @@
+2025-08-11T06:55:07.542+01:00 ERROR 26008 --- [habit-tracker] [restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to bind properties under 'logging.level.com.tyro' to org.springframework.boot.logging.LogLevel:
+
+    Property: logging.level.com.tyro
+    Value: "DEBUG   # your base package"
+    Origin: class path resource [application.properties] - 34:24
+    Reason: failed to convert java.lang.String to org.springframework.boot.logging.LogLevel (caused by java.lang.IllegalArgumentException: No enum constant org.springframework.boot.logging.LogLevel.DEBUG   # your base package)
+
+Action:
+
+Update your application's configuration. The following values are valid:
+
+    DEBUG
+    ERROR
+    FATAL
+    INFO
+    OFF
+    TRACE
+    WARN
+
+2025-08-11T06:56:03.554+01:00 ERROR 26008 --- [habit-tracker] [restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to bind properties under 'logging.level.com.tyro' to org.springframework.boot.logging.LogLevel:
+
+    Property: logging.level.com.tyro
+    Value: "DEBUG   # your base package"
+    Origin: class path resource [application.properties] - 34:24
+    Reason: failed to convert java.lang.String to org.springframework.boot.logging.LogLevel (caused by java.lang.IllegalArgumentException: No enum constant org.springframework.boot.logging.LogLevel.DEBUG   # your base package)
+
+Action:
+
+Update your application's configuration. The following values are valid:
+
+    DEBUG
+    ERROR
+    FATAL
+    INFO
+    OFF
+    TRACE
+    WARN
+
