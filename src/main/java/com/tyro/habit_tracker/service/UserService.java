@@ -29,7 +29,6 @@ import com.tyro.habit_tracker.security.JwtUtil;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @Service

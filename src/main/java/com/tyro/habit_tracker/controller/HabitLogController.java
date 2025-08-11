@@ -77,6 +77,11 @@ public class HabitLogController {
 			
 	}
 	
+	@GetMapping("/update-missed-habit")
+	public void checkMissedHabits() {
+		habitLogService.checkAndCreateMissedLog();
+	}
+	
 }
 //
 //List<HabitResponseDTO> habitResponse = habits.stream()

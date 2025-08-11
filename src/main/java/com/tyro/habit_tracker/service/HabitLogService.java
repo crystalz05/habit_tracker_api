@@ -1,6 +1,7 @@
 package com.tyro.habit_tracker.service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -51,55 +52,69 @@ public class HabitLogService {
         return habitLogRepository.findAllByHabitId(habitId);
     }
     
-    public void createMissedLog() {
-        LocalDate yesterday = LocalDate.now().minusDays(1);
+    public void checkAndCreateMissedLog() {
+        LocalDate today = LocalDate.now();
         List<Habit> allHabits = habitRepository.findAll();
 
         for (Habit habit : allHabits) {
-            if (isDailyHabit(habit)) {
-                handleDailyMissedLog(habit, yesterday);
-            } else if (isWeeklyHabit(habit)) {
-                handleWeeklyMissedLog(habit, yesterday);
+            LocalDate lastLogDate = habitLogRepository.findLatestHabitLogByHabitId(habit.getId())
+                    .map(HabitLog::getCreatedAt) // HabitLog.getCreatedAt() -> LocalDate
+                    .orElse(habit.getCreatedAt() != null ? habit.getCreatedAt().toLocalDate() : today);
+
+            if (habit.getFrequency() == Frequency.DAILY) {
+                handleDailyMissedLogs(habit, lastLogDate, today);
+            } else if (habit.getFrequency() == Frequency.WEEKLY) {
+                handleWeeklyMissedLogs(habit, lastLogDate, today);
+            } else if (habit.getFrequency() == Frequency.MONTHLY) {
+                handleMonthlyMissedLogs(habit, lastLogDate, today);
+            }
+        }
+    }
+
+    private void handleDailyMissedLogs(Habit habit, LocalDate lastLogDate, LocalDate today) {
+        long daysBetween = ChronoUnit.DAYS.between(lastLogDate, today);
+        if (daysBetween <= 0) return;
+
+        // Create a missed log for each day after the last log up to today
+        for (long i = 1; i <= daysBetween; i++) {
+            LocalDate missedDate = lastLogDate.plusDays(i);
+            if (!habitLogRepository.existsByHabitAndCreatedAt(habit, missedDate)) {
+                saveMissedLogForDate(habit, missedDate, "You skipped " + missedDate, LogStatus.SKIPPED);
             }
         }
     }
     
-    private boolean isDailyHabit(Habit habit) {
-        return habit.getFrequency() == Frequency.DAILY;
-    }
+    private void handleWeeklyMissedLogs(Habit habit, LocalDate lastLogDate, LocalDate today) {
+        long weeksBetween = ChronoUnit.WEEKS.between(lastLogDate, today);
+        if (weeksBetween <= 0) return;
 
-    private boolean isWeeklyHabit(Habit habit) {
-        return habit.getFrequency() == Frequency.WEEKLY;
-    }
-
-    private void handleDailyMissedLog(Habit habit, LocalDate date) {
-        if (!habitLogRepository.existsByHabitAndCreatedAt(habit, date)) {
-            saveMissedLog(habit, "You skipped today", LogStatus.SKIPPED);
-        }
-    }
-
-    private void handleWeeklyMissedLog(Habit habit, LocalDate yesterday) {
-        if (habit.getDayofWeekReminder().equals(yesterday.getDayOfWeek())
-                && !alreadyLoggedThisWeek(habit, yesterday)) {
-            saveMissedLog(habit, "You skipped this week", LogStatus.SKIPPED);
-        }
-    }
-
-    private boolean alreadyLoggedThisWeek(Habit habit, LocalDate yesterday) {
-        for (int i = 0; i < 7; i++) {
-            if (habitLogRepository.existsByHabitAndCreatedAt(habit, yesterday.minusDays(i))) {
-                return true;
+        for (long i = 1; i <= weeksBetween; i++) {
+            LocalDate missedDate = lastLogDate.plusWeeks(i);
+            if (!habitLogRepository.existsByHabitAndCreatedAt(habit, missedDate)) {
+                saveMissedLogForDate(habit, missedDate, "You skipped week of " + missedDate, LogStatus.SKIPPED);
             }
         }
-        return false;
     }
+    
 
-    private void saveMissedLog(Habit habit, String note, LogStatus status) {
+	private void handleMonthlyMissedLogs(Habit habit, LocalDate lastLogDate, LocalDate today) {
+	    long monthsBetween = ChronoUnit.MONTHS.between(lastLogDate.withDayOfMonth(1), today.withDayOfMonth(1));
+	    if (monthsBetween <= 0) return;
+	
+	    for (long i = 1; i <= monthsBetween; i++) {
+	        LocalDate missedDate = lastLogDate.plusMonths(i);
+	        if (!habitLogRepository.existsByHabitAndCreatedAt(habit, missedDate)) {
+	            saveMissedLogForDate(habit, missedDate, "You skipped month starting " + missedDate.withDayOfMonth(1), LogStatus.SKIPPED);
+	        }
+	    }
+	}
+
+    private void saveMissedLogForDate(Habit habit, LocalDate date, String note, LogStatus status) {
         HabitLog missedLog = new HabitLog();
         missedLog.setHabit(habit);
         missedLog.setNote(note);
         missedLog.setStatus(status);
-
+        missedLog.setCreatedAt(date);            // make sure HabitLog.createdAt is LocalDate
         habitLogRepository.save(missedLog);
 
         habit.setCompleted(false);

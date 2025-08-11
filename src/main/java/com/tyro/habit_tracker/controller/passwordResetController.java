@@ -1,18 +1,19 @@
 package com.tyro.habit_tracker.controller;
 
-import org.springframework.http.ResponseEntity;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.tyro.habit_tracker.dto.ResetPasswordForm;
 import com.tyro.habit_tracker.service.UserService;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -22,25 +23,29 @@ public class passwordResetController {
 	private final UserService userService;
 	
     @GetMapping("/reset-password")
-    public String showResetPasswordForm(@RequestParam("token") String token, Model model) {
-        model.addAttribute("token", token);
-        return "reset-password-form";
+    public String showResetPasswordForm(@RequestParam("token") String token) {
+        return "redirect:/reset-password-form.html?token=" + token;
     }
     
 
+    @Hidden
     @PostMapping("/update-password")
-    public String handlePasswordReset(@ModelAttribute ResetPasswordForm form, Model model) {
+    @ResponseBody
+    public Map<String, String> handlePasswordReset(@ModelAttribute ResetPasswordForm form) {
+        Map<String, String> response = new HashMap<String, String>();
         try {
             userService.resetPassword(
                 form.getToken(),
                 form.getPassword().trim(),
                 form.getConfirmPassword().trim()
             );
-            return "password-reset-completed";
+            response.put("status", "success");
+            response.put("message", "Password reset completed.");
         } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            return "password-reset-failed";
+            response.put("status", "error");
+            response.put("message", e.getMessage());
         }
+        return response;
     }
     
 }
