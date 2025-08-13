@@ -3,9 +3,9 @@ spring:
     name: habit-tracker
 
   datasource:
-    url: jdbc:postgresql://dpg-d2ebt50dl3ps73a41brg-a.oregon-postgres.render.com/habit_db_gsl4
-    username: tyro
-    password: xgWa9hpPIwNBGs4zVy9sbLaovxOUTCNx
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -19,8 +19,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 465
-    username: mikedetyro1@gmail.com
-    password: uwnlzuybklozmrkr
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:

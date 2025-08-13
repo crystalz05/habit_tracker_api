@@ -3,19 +3,17 @@ import java.util.Scanner;
 
 public class AddNumbers {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-		
-		Scanner myobj = new Scanner(System.in);
-		System.out.println("enter name, age and salary");
-		String name = myobj.nextLine();
-		int age = myobj.nextInt();
-		double salary = myobj.nextDouble();
-		
-		System.out.println("My name is "+name);
-		System.out.println("My age is "+age);
-		System.out.println("my slary is "+salary);
-	}
+    public static void main (String[] args) {
+        Scanner myObj = new Scanner (System.in);
+        System.out.println("Enter name, age and salary:");
+        
+        String name = myObj.nextLine();
+        int age = myObj.nextInt();
+        double salary = myObj.nextDouble();
+        
+        System.out.println ("Name: " + name);
+        System.out.println("Age:" + age);
+        System.out.println("Salary:" + salary);
+    }
 
 }
