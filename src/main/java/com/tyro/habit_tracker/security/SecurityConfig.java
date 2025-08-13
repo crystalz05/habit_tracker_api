@@ -63,6 +63,7 @@ public class SecurityConfig {
             	            "/v3/api-docs/**",
             	            "/test/**",
             	            "verification.html",
+            	            "/",
             				"/error").permitAll()
                 .requestMatchers("/api/user/me").authenticated()
                 .anyRequest().authenticated())
