@@ -3,10 +3,10 @@ spring:
     name: habit-tracker
 
   datasource:
-    url: jdbc:mysql://trolley.proxy.rlwy.net:34260/railway
-    username: root
-    password: hMlVYkCVAoFMKyMmIaYpDWvzOWMHXMJw
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://dpg-d2ebt50dl3ps73a41brg-a.oregon-postgres.render.com/habit_db_gsl4
+    username: tyro
+    password: xgWa9hpPIwNBGs4zVy9sbLaovxOUTCNx
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
@@ -14,7 +14,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   mail:
     host: smtp.gmail.com
