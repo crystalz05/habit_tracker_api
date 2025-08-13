@@ -1,11 +1,12 @@
-# Use a lightweight OpenJDK image
-FROM eclipse-temurin:21-jdk-alpine
-
-# Set working directory inside the container
+# Step 1: Build stage
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Copy the Maven/Gradle build output JAR into the container
-COPY target/*.jar app.jar
-
-# Run the app with any JVM options and environment variables
+# Step 2: Run stage
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
