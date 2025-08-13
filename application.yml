@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/habit_tracker}
-    username: ${MYSQLUSER:${DB_USERNAME:root}}
-    password: ${MYSQLPASSWORD:${DB_PASSWORD:password}}
+    url: ${MYSQL_URL:jdbc:mysql://root:hMlVYkCVAoFMKyMmIaYpDWvzOWMHXMJw@mysql.railway.internal:3306/railway}
+    username: ${MYSQLUSER:root}
+    password: ${MYSQLPASSWORD:hMlVYkCVAoFMKyMmIaYpDWvzOWMHXMJw}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -18,5 +18,5 @@ spring:
     password: ${MAIL_PASSWORD}
 
 jwt:
-  secret: ${JWT_SECRET:dev-secret}
+  secret: ${JWT_SECRET:9F8B67A143C1D2937D8E5609EA1F9C435F31A26DC57DCA35B1A84EF2E8A34FC51979C43CEB5E867AC1B4A329E3F0B973AA8A6E8D8F4DE31E3E446F3029386A37}
   expiration: ${JWT_EXPIRATION:86400000}
