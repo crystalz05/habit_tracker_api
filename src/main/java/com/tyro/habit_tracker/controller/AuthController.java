@@ -16,6 +16,7 @@ import com.tyro.habit_tracker.dto.UserDTO;
 import com.tyro.habit_tracker.service.UserService;
 import com.tyro.habit_tracker.service.VerificationTokenService;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -49,6 +50,8 @@ public class AuthController {
 	                .body(new AuthResponse<>(false, null, e.getMessage()));		}
 	}
 	
+	
+	@Hidden
 	@GetMapping("/verify")
 	public ResponseEntity<String> verifyToken(@RequestParam String token, @RequestParam String email) {
 	    boolean verified = tokenService.verifyToken(email, token);
